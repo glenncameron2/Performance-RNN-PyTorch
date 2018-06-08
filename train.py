@@ -138,7 +138,7 @@ print('Reset optimizer:', reset_optimizer)
 print('Enabling logging:', enable_logging)
 print('Device:', device)
 print('-' * 70)
-best_val_loss = None
+best_loss = None
 
 #========================================================================
 # Load session and dataset
@@ -190,14 +190,14 @@ print('-' * 70)
 #------------------------------------------------------------------------
 
 def save_model():
-    global model, optimizer, model_config, sess_path, best_val_loss, val_loss
-    if not best_val_loss or val_loss < best_val_loss:
+    global model, optimizer, model_config, sess_path, best_loss, train_loss
+    if not best_loss or train_loss < best_loss:
         print('Saving to', sess_path)
         torch.save({'model_config': model_config,
                     'model_state': model.state_dict(),
                     'model_optimizer_state': optimizer.state_dict()}, sess_path)
         print('Done saving')
-        best_val_loss = val_loss
+        best_loss = train_loss
     else:
         print ('Skipping')
 
@@ -248,7 +248,7 @@ try:
             writer.add_scalar('norm', norm.item(), iteration)
 
         print('iter ' + str(iteration) + ', loss: ' + str(loss.item()))
-        val_loss = loss.item()
+        train_loss = loss.item()
         if time.time() - last_saving_time > saving_interval:
             save_model()
             last_saving_time = time.time()

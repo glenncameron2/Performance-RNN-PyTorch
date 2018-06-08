@@ -65,8 +65,9 @@ This model is not implemented in the official way!
     # Generate with control sequence from test.data and model from save/test.sess
     python3 generate.py -s save/test.sess -c test.data
 
-    # Generate with pitch histogram and note density (C major scale) <- Use this one :wink:
+    # Generate with pitch histogram and note density (C major scale) <- Use this one 
     python3 generate.py -s save/test.sess -l 1000 -c '1,0,1,0,1,1,0,1,0,1,0,1;3'
+    :wink:
 
     # Or...
     python3 generate.py -s save/test.sess -l 1000 -c ';3' # uniform pitch histogram

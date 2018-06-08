@@ -138,7 +138,7 @@ print('Reset optimizer:', reset_optimizer)
 print('Enabling logging:', enable_logging)
 print('Device:', device)
 print('-' * 70)
-
+best_val_loss = None
 
 #========================================================================
 # Load session and dataset
@@ -190,13 +190,16 @@ print('-' * 70)
 #------------------------------------------------------------------------
 
 def save_model():
-    global model, optimizer, model_config, sess_path
-    print('Saving to', sess_path)
-    torch.save({'model_config': model_config,
-                'model_state': model.state_dict(),
-                'model_optimizer_state': optimizer.state_dict()}, sess_path)
-    print('Done saving')
-
+    global model, optimizer, model_config, sess_path, best_val_loss, val_loss
+    if not best_val_loss or val_loss < best_val_loss:
+        print('Saving to', sess_path)
+        torch.save({'model_config': model_config,
+                    'model_state': model.state_dict(),
+                    'model_optimizer_state': optimizer.state_dict()}, sess_path)
+        print('Done saving')
+        best_val_loss = val_loss
+    else:
+        print ('Skipping')
 
 #========================================================================
 # Training
@@ -209,9 +212,9 @@ if enable_logging:
 last_saving_time = time.time()
 loss_function = nn.CrossEntropyLoss()
 
+
 try:
     batch_gen = dataset.batches(batch_size, window_size, stride_size)
-
     for iteration, (events, controls) in enumerate(batch_gen):
         if use_transposition:
             offset = np.random.choice(np.arange(-6, 6))
@@ -244,8 +247,8 @@ try:
             writer.add_scalar('loss', loss.item(), iteration)
             writer.add_scalar('norm', norm.item(), iteration)
 
-        print(f'iter {iteration}, loss: {loss.item()}')
-
+        print('iter ' + str(iteration) + ', loss: ' + str(loss.item()))
+        val_loss = loss.item()
         if time.time() - last_saving_time > saving_interval:
             save_model()
             last_saving_time = time.time()

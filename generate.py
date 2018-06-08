@@ -92,13 +92,13 @@ if use_beam_search:
 else:
     beam_size = 'DISABLED'
 
-assert os.path.isfile(sess_path), f'"{sess_path}" is not a file'
+assert os.path.isfile(sess_path), sess_path + ' is not a file'
 
 if control is not None:
     if os.path.isfile(control) or os.path.isdir(control):
         if os.path.isdir(control):
             files = list(utils.find_files_by_extensions(control))
-            assert len(files) > 0, f'no file in "{control}"'
+            assert len(files) > 0, 'no file in' + control
             control = np.random.choice(files)
         _, compressed_controls = torch.load(control)
         controls = ControlSeq.recover_compressed_array(compressed_controls)
@@ -106,7 +106,7 @@ if control is not None:
             max_len = controls.shape[0]
         controls = torch.tensor(controls, dtype=torch.float32)
         controls = controls.unsqueeze(1).repeat(1, batch_size, 1).to(device)
-        control = f'control sequence from "{control}"'
+        control = 'control sequence from ' + control
 
     else:
         pitch_histogram, note_density = control.split(';')
@@ -186,7 +186,7 @@ outputs = outputs.cpu().numpy().T # [batch, steps]
 os.makedirs(output_dir, exist_ok=True)
 
 for i, output in enumerate(outputs):
-    name = f'output-{i:03d}.mid'
+    name = 'output-' + 'i:03d' + '.mid'
     path = os.path.join(output_dir, name)
     n_notes = utils.event_indeces_to_midi_file(output, path)
-    print(f'===> {path} ({n_notes} notes)')
+    print('===> ' + path + str(n_notes) + ' notes')

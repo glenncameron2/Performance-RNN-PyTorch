@@ -8,6 +8,7 @@ This model is not implemented in the official way!
 
 ## Pretrained Model - Loss ~ 0.85
 [Model trained for about 8 hours] (https://www.dropbox.com/s/mi9oogmj22bf1ln/myModelNew.sess?dl=0)
+
 Example Songs:
 [Pythagorus's Deep Journey] (https://soundcloud.com/glenncameronjr/pythagorus-deep-journey)
 ## Directory Structure
